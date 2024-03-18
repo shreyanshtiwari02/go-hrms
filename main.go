@@ -49,12 +49,15 @@ func Connect() error {
 }
 
 func main() {
-
+	//connecting with mongodb
 	if err := Connect(); err != nil {
 		log.Fatal(err)
 	}
+
+	//creating a new fiber app
 	app := fiber.New()
 
+	// getting all the employees	
 	app.Get("/employee", func(c *fiber.Ctx) error {
 
 		query := bson.D{{}}
@@ -72,7 +75,8 @@ func main() {
 
 		return c.JSON(employees)
 	})
-
+	
+	// adding an employee
 	app.Post("/employee", func(c *fiber.Ctx) error {
 		collection := mg.Db.Collection("employees")
 
@@ -99,7 +103,8 @@ func main() {
 		return c.Status(201).JSON(createdEmployee)
 
 	})
-
+	
+	// updating information of an existing employee
 	app.Put("/employee/:id", func(c *fiber.Ctx) error {
 		idParam := c.Params("id")
 
@@ -141,6 +146,7 @@ func main() {
 
 	})
 
+	// deleting an employee
 	app.Delete("/employee/:id", func(c *fiber.Ctx) error {
 
 		employeeID, err := primitive.ObjectIDFromHex(c.Params("id"))
